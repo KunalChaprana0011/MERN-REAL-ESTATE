@@ -35,3 +35,7 @@
         hsl(0deg 11% 93%) 100%
     );
   }
+
+ body{
+  background-color: rgb(241, 245, 241);
+  }
