@@ -68,13 +68,13 @@ const SignUp = () => {
           onChange={handleChange}
         />
         <button disabled={loading} className="bg-slate-700 text-white p-3 rounded-lg  disabled:opacity-95 mt-4 uppercase">
-          {loading ?"Loading..." : "SignUp"}
+          {loading ?"Loading..." : "Sign Up"}
         </button>
       </form>
       <div className="flex gap-2 mt-4">
         <span>Have an Account?</span>
         <Link to={"/sign-in"}>
-          <span className="text-blue-600">SignIn </span>
+          <span className="text-blue-600">Sign In </span>
         </Link>
       </div>
       {error && <p className="text-red-600 mt-5">{error}</p>}
