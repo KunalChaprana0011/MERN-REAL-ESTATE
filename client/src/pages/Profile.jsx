@@ -4,13 +4,16 @@ import {
   updateUserSuccess,
   updateUserStart,
   updateUserFailure,
+  deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../redux/user/userSlice.js";
 import { useDispatch } from "react-redux";
 const Profile = () => {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
-  const [updateSuccess,setUpdateSuccess] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   // console.log(formData);
 
@@ -42,6 +45,23 @@ const Profile = () => {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
@@ -87,11 +107,18 @@ const Profile = () => {
         </button>
       </form>
       <div className="flex justify-between mt-5 font-semibold">
-        <span className="text-red-700 cursor-pointer">Delete account</span>
+        <span
+          onClick={handleDeleteUser}
+          className="text-red-700 cursor-pointer"
+        >
+          Delete account
+        </span>
         <span className="text-red-700 cursor-pointer">Sign Out</span>
       </div>
       <p className="text-red-500 mt-5 font-semibold">{error ? error : ""}</p>
-      <p className="text-green-700 mt-5 font-semibold">{updateSuccess ? 'User is updated successfully!!' : ''}</p>
+      <p className="text-green-700 mt-5 font-semibold">
+        {updateSuccess ? "User is updated successfully!!" : ""}
+      </p>
     </div>
   );
 };
