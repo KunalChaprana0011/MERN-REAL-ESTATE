@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   updateUserSuccess,
   updateUserStart,
@@ -17,8 +17,50 @@ const Profile = () => {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [fileUploadError, setFileUploadError] = useState(false);
 
+  const [file, setFile] = useState(undefined);
   // console.log(formData);
+
+  const cloudname = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+
+  const handleFileUpload = async (file) => {
+    if (!file) return;
+
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "mernestate");
+    data.append("cloud_name", cloudname );
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudname}/image/upload`,
+      {
+        method: "POST",
+        body: data,
+      }
+    );
+    // (error) => {
+    //   setFileUploadError(true);
+    // };
+
+    const uploadImageURL = await res.json();
+    console.log(uploadImageURL.url);
+    
+    if (uploadImageURL) {
+      setFormData({ ...formData, avatar: uploadImageURL.url });
+    }
+    else{
+      setFileUploadError(true);
+    }
+  };
+
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+
+
 
   const dispatch = useDispatch();
 
@@ -87,13 +129,27 @@ const Profile = () => {
     <div className="max-w-lg mx-auto p-3">
       <h1 className="text-4xl text-center font-semibold my-7">Profile</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input type="file" ref={fileRef} hidden accept="image/*" />
+        <input
+          onChange={(e) => setFile(e.target.files[0])}
+          type="file"
+          ref={fileRef}
+          hidden
+          accept="image/*"
+        />
         <img
           onClick={() => fileRef.current.click()}
           className="rounded-full h-24 w-24 object-cover self-center mt-2 cursor-pointer"
-          src={currentUser.avatar}
+          src={formData.avatar || currentUser.avatar}
           alt="profile"
         />
+        <p className="text-sm self-center">
+          {fileUploadError ? (
+            <span className="text-red-700 font-semibold">
+              Error Image Upload!!
+            </span>
+          ) : ""
+          }
+        </p>
         <input
           type="text"
           placeholder="username"
