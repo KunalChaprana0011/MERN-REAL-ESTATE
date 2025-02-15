@@ -12,6 +12,7 @@ import {
   signOutUserSuccess,
 } from "../redux/user/userSlice.js";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 const Profile = () => {
   const fileRef = useRef(null);
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -30,7 +31,7 @@ const Profile = () => {
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "mernestate");
-    data.append("cloud_name", cloudname );
+    data.append("cloud_name", cloudname);
 
     const res = await fetch(
       `https://api.cloudinary.com/v1_1/${cloudname}/image/upload`,
@@ -45,11 +46,10 @@ const Profile = () => {
 
     const uploadImageURL = await res.json();
     console.log(uploadImageURL.url);
-    
+
     if (uploadImageURL) {
       setFormData({ ...formData, avatar: uploadImageURL.url });
-    }
-    else{
+    } else {
       setFileUploadError(true);
     }
   };
@@ -59,8 +59,6 @@ const Profile = () => {
       handleFileUpload(file);
     }
   }, [file]);
-
-
 
   const dispatch = useDispatch();
 
@@ -147,8 +145,9 @@ const Profile = () => {
             <span className="text-red-700 font-semibold">
               Error Image Upload!!
             </span>
-          ) : ""
-          }
+          ) : (
+            ""
+          )}
         </p>
         <input
           type="text"
@@ -179,6 +178,7 @@ const Profile = () => {
         >
           {loading ? "Loading..." : "Update"}
         </button>
+        <Link className="bg-green-700 text-white p-3  rounded-lg uppercase text-center hover:opacity-95" to={"/create-listing"}>Create Listing</Link>
       </form>
       <div className="flex justify-between mt-5 font-semibold">
         <span
