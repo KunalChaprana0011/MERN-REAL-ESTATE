@@ -22,11 +22,10 @@ const Profile = () => {
 
   const [file, setFile] = useState(undefined);
 
-  const [showListingsError,setShowListingsError] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
 
-  const[userListings,setUserListings] = useState([]);
+  const [userListings, setUserListings] = useState([]);
 
-  
   // console.log(formData);
 
   const cloudname = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -129,25 +128,43 @@ const Profile = () => {
     }
   };
 
-  const handleShowListings = async() => {
+  const handleShowListings = async () => {
     setShowListingsError(false);
     try {
-      const res= await fetch(`/api/user/listings/${currentUser._id}`);
+      const res = await fetch(`/api/user/listings/${currentUser._id}`);
       const data = await res.json();
-      if(data.success == false){
+      if (data.success == false) {
         setShowListingsError(true);
         return;
       }
 
       setUserListings(data);
-      
     } catch (error) {
       console.log(error);
-      
-      setShowListingsError(true);
 
+      setShowListingsError(true);
     }
-  }
+  };
+
+  const handleListingDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: "DELETE",
+      });
+
+      const data = await res.json();
+
+      if(data.success === false){
+        console.log(data.message);
+        return;
+        
+      }
+
+      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-3">
@@ -204,17 +221,22 @@ const Profile = () => {
         >
           {loading ? "Loading..." : "Update"}
         </button>
-        
-        <Link className="bg-green-700 text-white p-3  rounded-lg uppercase text-center hover:opacity-95" to={"/create-listing"}>Create Listing</Link>
+
+        <Link
+          className="bg-green-700 text-white p-3  rounded-lg uppercase text-center hover:opacity-95"
+          to={"/create-listing"}
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5 font-semibold">
         <span
           onClick={handleDeleteUser}
-          className="text-red-700 cursor-pointer"
+          className="text-red-700 cursor-pointer uppercase"
         >
           Delete account
         </span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer uppercase">
           Sign Out
         </span>
       </div>
@@ -222,30 +244,53 @@ const Profile = () => {
       <p className="text-green-700 mt-5 font-semibold">
         {updateSuccess ? "User is updated successfully!!" : ""}
       </p>
-      <button onClick={handleShowListings} className="flex flex-col w-full bg-cyan-700 p-3 text-white uppercase rounded-lg mt-8">Show listings</button>
-      <p className="text-red-700 font-semibold mt-5">{showListingsError ? 'Error Showing Listings!!' : ''}</p>
-      {userListings && userListings.length > 0 && 
-          
-          <div className="flex flex-col gap-3">
-            <h1 className="text-center my-7 text-2xl font-semibold">Your Listings</h1>
-            {userListings.map((listing) => 
-        <div key={listing._id} className="border rounded-lg p-3 flex justify-between items-center gap-8 ">
-          <Link to={`/listing/${listing._id}`}>
-            <img src={listing.imageUrls[0]} alt="listing image" className="w-25 h-20 object-contain rounded-md" />
-          </Link>
-          <Link className="text-slate-900 font-medium truncate flex-1 hover:text-gray-700" to={`/listing/${listing._id}`}>
-            <p >{listing.name}</p>
-          </Link>
-          <div className="flex flex-col">
-            <button className="text-red-900 uppercase font-semibold">delete</button>
-            <button className="text-green-900 uppercase font-semibold">edit</button>
-          </div>
+      <button
+        onClick={handleShowListings}
+        className="flex flex-col w-full bg-cyan-700 p-3 text-white uppercase rounded-lg mt-8"
+      >
+        Show listings
+      </button>
+      <p className="text-red-700 font-semibold mt-5">
+        {showListingsError ? "Error Showing Listings!!" : ""}
+      </p>
+      {userListings && userListings.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <h1 className="text-center my-7 text-2xl font-semibold">
+            Your Listings
+          </h1>
+          {userListings.map((listing) => (
+            <div
+              key={listing._id}
+              className="border rounded-lg p-3 flex justify-between items-center gap-8 "
+            >
+              <Link to={`/listing/${listing._id}`}>
+                <img
+                  src={listing.imageUrls[0]}
+                  alt="listing image"
+                  className="w-25 h-20 object-contain rounded-md"
+                />
+              </Link>
+              <Link
+                className="text-slate-900 font-medium truncate flex-1 hover:text-gray-700"
+                to={`/listing/${listing._id}`}
+              >
+                <p>{listing.name}</p>
+              </Link>
+              <div className="flex flex-col">
+                <button
+                  onClick={() => handleListingDelete(listing._id)}
+                  className="text-red-900 uppercase font-semibold"
+                >
+                  delete
+                </button>
+                <button className="text-green-900 uppercase font-semibold">
+                  edit
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
-
       )}
-          </div>  
-
-      }
     </div>
   );
 };
