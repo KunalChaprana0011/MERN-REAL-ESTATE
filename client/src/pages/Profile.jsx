@@ -154,13 +154,14 @@ const Profile = () => {
 
       const data = await res.json();
 
-      if(data.success === false){
+      if (data.success === false) {
         console.log(data.message);
         return;
-        
       }
 
-      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId))
+      setUserListings((prev) =>
+        prev.filter((listing) => listing._id !== listingId)
+      );
     } catch (error) {
       console.log(error.message);
     }
@@ -236,7 +237,10 @@ const Profile = () => {
         >
           Delete account
         </span>
-        <span onClick={handleSignOut} className="text-red-700 cursor-pointer uppercase">
+        <span
+          onClick={handleSignOut}
+          className="text-red-700 cursor-pointer uppercase"
+        >
           Sign Out
         </span>
       </div>
@@ -283,9 +287,11 @@ const Profile = () => {
                 >
                   delete
                 </button>
-                <button className="text-green-900 uppercase font-semibold">
-                  edit
-                </button>
+                <Link to={`/update-listing/${listing._id}`}>
+                  <button className="text-green-900 uppercase font-semibold">
+                    edit
+                  </button>
+                </Link>
               </div>
             </div>
           ))}
