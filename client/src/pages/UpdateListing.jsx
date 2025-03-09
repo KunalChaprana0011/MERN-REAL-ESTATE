@@ -44,7 +44,7 @@ const UpdateListing = () => {
       setFormData(data);
     };
     fetchListing();
-  }, []);
+  }, [params.listingId]);
 
   const handleImageSubmit = async () => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
@@ -302,7 +302,7 @@ const UpdateListing = () => {
               <div className="flex flex-col items-center">
                 <p>Regular Price</p>
                 {formData.type === 'rent' && (
-                  <span className='text-xs'>($ / month)</span>
+                  <span className='text-xs'>(₹ / month)</span>
                 )}
               </div>
             </div>
@@ -321,7 +321,7 @@ const UpdateListing = () => {
                 <div className="flex flex-col items-center">
                   <p>Discounted Price</p>
                   {formData.type === 'rent' && (
-                  <span className='text-xs'>($ / month)</span>
+                  <span className='text-xs'>(₹ / month)</span>
                 )}
                 </div>
               </div>
