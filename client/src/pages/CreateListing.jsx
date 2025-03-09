@@ -1,12 +1,12 @@
 import { useState } from "react";
-import {useSelector} from 'react-redux'
-import {useNavigate} from 'react-router-dom'
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const cloudname = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 
 const CreateListing = () => {
   const navigate = useNavigate();
-  const {currentUser} = useSelector((state) => state.user)
+  const { currentUser } = useSelector((state) => state.user);
   const [files, setFiles] = useState([]);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -124,11 +124,11 @@ const CreateListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if(formData.imageUrls.length < 1) {
-        return setError('You should upload at least one image')
+      if (formData.imageUrls.length < 1) {
+        return setError("You should upload at least one image");
       }
-      if(+formData.regularPrice < +formData.discountPrice) {
-        return setError('Discount price should be lower than Regular price')
+      if (+formData.regularPrice < +formData.discountPrice) {
+        return setError("Discount price should be lower than Regular price");
       }
       setLoading(true);
       setError(false);
@@ -140,7 +140,7 @@ const CreateListing = () => {
         },
         body: JSON.stringify({
           ...formData,
-          userRef : currentUser._id
+          userRef: currentUser._id,
         }),
       });
 
@@ -149,7 +149,7 @@ const CreateListing = () => {
       if (data.success == false) {
         setError(data.message);
       }
-      navigate(`/listing/${data._id}`)
+      navigate(`/listing/${data._id}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -286,25 +286,31 @@ const CreateListing = () => {
               />
               <div className="flex flex-col items-center">
                 <p>Regular Price</p>
-                <span className="text-xs">(₹ / month)</span>
+                {formData.type === "rent" && (
+                  <span className="text-xs">($ / month)</span>
+                )}
               </div>
             </div>
-            {formData.offer && (<div className="flex items-center gap-2 ">
-              <input
-                type="number"
-                id="discountPrice"
-                min="1"
-                max="1000000000"
-                required
-                className="rounded-lg border border-gray-300 p-3"
-                onChange={handleChange}
-                value={formData.discountPrice}
-              />
-              <div className="flex flex-col items-center">
-                <p>Discounted Price</p>
-                <span className="text-xs">(₹ / month)</span>
+            {formData.offer && (
+              <div className="flex items-center gap-2 ">
+                <input
+                  type="number"
+                  id="discountPrice"
+                  min="1"
+                  max="1000000000"
+                  required
+                  className="rounded-lg border border-gray-300 p-3"
+                  onChange={handleChange}
+                  value={formData.discountPrice}
+                />
+                <div className="flex flex-col items-center">
+                  <p>Discounted Price</p>
+                  {formData.type === "rent" && (
+                    <span className="text-xs">($ / month)</span>
+                  )}
+                </div>
               </div>
-            </div>)}
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-4">
@@ -357,10 +363,15 @@ const CreateListing = () => {
                 </button>
               </div>
             ))}
-          <button disabled={loading || uploading} className=" my-4 p-3 bg-slate-800 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
+          <button
+            disabled={loading || uploading}
+            className=" my-4 p-3 bg-slate-800 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
             {loading ? "Creating.." : "Create Listing"}
           </button>
-          {error && <p className="text-red-700 text-sm font-semibold">{error}</p>}
+          {error && (
+            <p className="text-red-700 text-sm font-semibold">{error}</p>
+          )}
         </div>
       </form>
     </main>
