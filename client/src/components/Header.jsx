@@ -50,7 +50,7 @@ const Header = () => {
           </button>
         </form>
         <ul className="flex gap-6 text-slate-600 font-medium ">
-          <Link to="/home">
+          <Link to="/">
             <li className="cursor-pointer hover:text-slate-900 hidden  sm:inline">
               Home
             </li>
