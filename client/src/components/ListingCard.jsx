@@ -28,7 +28,7 @@ import { FaBath, FaBed } from 'react-icons/fa';
            <p className='text-sm text-gray-600 line-clamp-2'>
              {listing.description}
            </p>
-           <p className='text-slate-800 mt-2 font-semibold '>
+           <p className='text-slate-600 mt-2 font-bold text-xl '>
            ₹ 
              {listing.offer
                ? listing.discountPrice.toLocaleString("en-IN")
