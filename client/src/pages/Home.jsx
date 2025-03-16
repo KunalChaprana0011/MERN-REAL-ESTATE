@@ -103,7 +103,7 @@ const Home = () => {
               : "opacity-0 translate-y-5"
           }`}
         >
-          MERN Estate is the best place to find your next perfect place to live.
+          Mern Estate is the best place to find your next perfect place to live.
           <br />
           We have a wide range of properties for you to choose from.
         </div>

@@ -16,7 +16,7 @@ export default function Search() {
   });
 
   const [loading, setLoading] = useState(false);
-  console.log(loading);
+  
   const [listings, setListings] = useState([]);
   const [showMore, setShowMore] = useState(false);
 
